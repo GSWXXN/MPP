@@ -1,4 +1,4 @@
-package com.gswxxn.custompackageinstaller;
+package com.gswxxn.MaterialPodsPro;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

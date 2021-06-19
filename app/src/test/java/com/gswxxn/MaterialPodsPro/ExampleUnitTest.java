@@ -1,4 +1,4 @@
-package com.gswxxn.custompackageinstaller;
+package com.gswxxn.MaterialPodsPro;
 
 import org.junit.Test;
 
