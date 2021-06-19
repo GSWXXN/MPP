@@ -8,8 +8,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class MainHook implements IXposedHookLoadPackage {
     public static final String hookPackageName = "com.pryshedko.materialpods";
-//  public static final String loadedClass = "b.a.a.o.u.a.a";
-//  public static final String loadedClass2 = "b.a.a.o.u.b.a";
     public static Class<?> clazz;
     public static Class<?> clazz2;
 
