@@ -3,11 +3,11 @@
           package="com.gswxxn.MaterialPodsPro">
 
     <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+            android:allowBackup="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true">
 
         <meta-data
                 android:name="xposedmodule"
@@ -23,7 +23,7 @@
 
         <meta-data
                 android:name="xposeddescription"
-                android:value="破解MaterialPodsPro, 适配v5.11及以上版本"/>
+                android:value="为MaterialPods开放Pro功能"/>
 
     </application>
 </manifest>
