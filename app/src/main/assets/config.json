@@ -110,7 +110,37 @@
         "ClassName": "p9.a",
         "MethodName": "d"
       }
-    }
+    },
+    "574": {
+      "Class1": {
+        "ClassName": "s9.a",
+        "MethodName": "a"
+      },
+      "Class2": {
+        "ClassName": "t9.a",
+        "MethodName": "d"
+      }
+    },
+    "577": {
+      "Class1": {
+        "ClassName": "s9.a",
+        "MethodName": "a"
+      },
+      "Class2": {
+        "ClassName": "t9.a",
+        "MethodName": "d"
+      }
+    },
 
+    "default": {
+      "Class1": {
+        "ClassName": "s9.a",
+        "MethodName": "a"
+      },
+      "Class2": {
+        "ClassName": "t9.a",
+        "MethodName": "d"
+      }
+    }
   }
 }

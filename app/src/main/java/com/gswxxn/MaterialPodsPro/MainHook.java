@@ -19,24 +19,45 @@ public class MainHook implements IXposedHookLoadPackage {
     public static final String hookPackageName = "com.pryshedko.materialpods";
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam){
+        String[][] targetClass = null;
         if (lpparam.packageName.equals(hookPackageName)) {
-            String versionCode = String.valueOf(getPackageVersion(lpparam));
+            // Get app version
+            String versionCode = getPackageVersion(lpparam);
             XposedBridge.log("[MPP] APP Current version code: " + versionCode);
-            String[][] targetClass = findTargetClass(versionCode);
 
+            // Read class name from JSON file
+            try {
+                targetClass = findTargetClass(versionCode);
+            }catch (JSONException e) {
+                try {
+                    XposedBridge.log("[MPP] Not adapted for current version (" + versionCode + "), use default config");
+                    targetClass = findTargetClass("default");
+                } catch (JSONException jsonException) {
+                    XposedBridge.log(jsonException);
+                }
+            }
+
+            // Start Hook
             if (targetClass != null) {
-                modifyMethod(targetClass, lpparam.classLoader);
+                try {
+                    modifyMethod(targetClass, lpparam.classLoader);
+                }catch (XposedHelpers.ClassNotFoundError | NoSuchMethodError e) {
+                    XposedBridge.log("[MPP] This version(" + versionCode + ") has not been adapted");
+                }
             }
         }
     }
 
-    public void modifyMethod(String[][] classAndMethod, ClassLoader cl) {
+    // Main Hook
+    public void modifyMethod(String[][] classAndMethod, ClassLoader cl)
+            throws XposedHelpers.ClassNotFoundError, NoSuchMethodError {
         Class<?> clazz1 = XposedHelpers.findClass(classAndMethod[0][0], cl);
         Class<?> clazz2 = XposedHelpers.findClass(classAndMethod[1][0], cl);
 
         // Modify Class 1
-        XposedHelpers.findAndHookMethod(clazz1, classAndMethod[0][1], String.class, boolean.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(clazz1, classAndMethod[0][1], String.class, boolean.class,
+                new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
@@ -56,7 +77,8 @@ public class MainHook implements IXposedHookLoadPackage {
         });
     }
 
-    public String[][] findTargetClass(String versionCode) {
+    // read class name form json file
+    public String[][] findTargetClass(String versionCode) throws JSONException{
         try {
             InputStreamReader isr = new InputStreamReader(
                     Objects.requireNonNull(
@@ -78,31 +100,34 @@ public class MainHook implements IXposedHookLoadPackage {
                     data.getJSONObject("Class2").getString("MethodName")};
             return new String[][]{class1, class2};
         } catch (IOException e) {
+            XposedBridge.log("[MPP] Here is an exception");
             XposedBridge.log(e);
-        } catch (JSONException e) {
-            XposedBridge.log("[MPP] This version(" + versionCode + ") has not been adapted");
         }
         return null;
     }
 
-
-    private int getPackageVersion(XC_LoadPackage.LoadPackageParam lpparam) {
+    // getPackageVersion
+    private String getPackageVersion(XC_LoadPackage.LoadPackageParam lpparam) {
         try {
             File apkPath = new File(lpparam.appInfo.sourceDir);
             int versionCode;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Class<?> pkgParserClass = XposedHelpers.findClass("android.content.pm.PackageParser", lpparam.classLoader);
-                Object packageLite = XposedHelpers.callStaticMethod(pkgParserClass, "parsePackageLite", apkPath, 0);
+                Class<?> pkgParserClass = XposedHelpers.findClass(
+                        "android.content.pm.PackageParser", lpparam.classLoader);
+                Object packageLite = XposedHelpers.callStaticMethod(
+                        pkgParserClass, "parsePackageLite", apkPath, 0);
                 versionCode = XposedHelpers.getIntField(packageLite, "versionCode");
             } else {
-                Class<?> parserCls = XposedHelpers.findClass("android.content.pm.PackageParser", lpparam.classLoader);
-                Object pkg = XposedHelpers.callMethod(parserCls.newInstance(), "parsePackage", apkPath, 0);
+                Class<?> parserCls = XposedHelpers.findClass(
+                        "android.content.pm.PackageParser", lpparam.classLoader);
+                Object pkg = XposedHelpers.callMethod(
+                        parserCls.newInstance(), "parsePackage", apkPath, 0);
                 versionCode = XposedHelpers.getIntField(pkg, "mVersionCode");
             }
-            return versionCode;
+            return String.valueOf(versionCode);
         } catch (Throwable e) {
             XposedBridge.log(e);
         }
-        return -1;
+        return null;
     }
 }
