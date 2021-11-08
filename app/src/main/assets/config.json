@@ -131,6 +131,16 @@
         "MethodName": "d"
       }
     },
+    "581": {
+      "Class1": {
+        "ClassName": "s9.a",
+        "MethodName": "a"
+      },
+      "Class2": {
+        "ClassName": "k6.f",
+        "MethodName": "e"
+      }
+    },
 
     "default": {
       "Class1": {
@@ -138,8 +148,8 @@
         "MethodName": "a"
       },
       "Class2": {
-        "ClassName": "t9.a",
-        "MethodName": "d"
+        "ClassName": "k6.f",
+        "MethodName": "e"
       }
     }
   }
